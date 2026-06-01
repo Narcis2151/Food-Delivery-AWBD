@@ -1,0 +1,67 @@
+erDiagram
+    ADDRESSES {
+        int id PK
+        string street
+        string city
+        string state
+        string country
+    }
+
+    ROLES {
+        int id PK
+        string name
+    }
+
+    USERS {
+        int id PK
+        string name
+        string email "UNIQUE"
+        string password
+        int role_id FK
+        string phone_number
+        int address_id FK
+    }
+
+    MENU_ITEM_CATEGORIES {
+        int id PK
+        string name
+        int display_order
+    }
+
+    MENU_ITEMS {
+        int id PK
+        string name
+        string description
+        decimal price
+        boolean is_available
+        string image_url
+    }
+
+    ORDERS {
+        int id PK
+        int user_id FK
+        string order_status "order_status_enum"
+        string payment_method "payment_method_enum"
+        string payment_status "payment_status_enum"
+        decimal total_amount
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    ORDER_ITEMS {
+        int id PK
+        int order_id FK
+        int menu_item_id FK
+        int quantity
+        decimal price
+        decimal order_total
+    }
+
+
+%% Relationships
+    ADDRESSES ||--o{ USERS : "address_id"
+    USERS ||--o{ ORDERS : "user_id"
+    ORDERS ||--o{ ORDER_ITEMS : "order_id"
+    MENU_ITEMS ||--o{ ORDER_ITEMS : "menu_item_id"
+    MENU_ITEM_CATEGORIES ||--o{ MENU_ITEMS : "category_id"
+    AUTHORITIES ||--o{ USERS : "authority_id"
