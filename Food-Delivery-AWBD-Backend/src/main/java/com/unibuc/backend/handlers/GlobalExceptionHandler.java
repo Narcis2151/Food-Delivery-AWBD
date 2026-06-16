@@ -33,7 +33,9 @@ public class GlobalExceptionHandler {
             StoreNotFoundException.class,
             UserNotFoundException.class,
             MenuItemCategoryNotFoundException.class,
-            MenuItemNotFoundException.class
+            MenuItemNotFoundException.class,
+            OrderNotFoundException.class,
+            ReviewNotFoundException.class
     })
     public ResponseEntity<ErrorResponse> handleNotFound(RuntimeException e) {
         return ResponseEntity
