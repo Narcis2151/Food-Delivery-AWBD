@@ -54,7 +54,9 @@ create table menu_items (
     image_url varchar(255),
 
     category_id int not null,
-    foreign key (category_id) references menu_item_categories(id)
+    store_id int not null,
+    foreign key (category_id) references menu_item_categories(id),
+    foreign key (store_id) references stores(id)
 );
 
 create table orders (

@@ -22,9 +22,20 @@ erDiagram
         int address_id FK
     }
 
+    STORES {
+        int id PK
+        string name
+        string description
+        int address_id FK
+        string contact_phone_number
+        string email
+        int owner_id FK
+    }
+
     MENU_ITEM_CATEGORIES {
         int id PK
         string name
+        int store_id FK
         int display_order
     }
 
@@ -35,14 +46,15 @@ erDiagram
         decimal price
         boolean is_available
         string image_url
+        int category_id FK
+        int store_id FK
     }
 
     ORDERS {
         int id PK
         int user_id FK
+        int store_id FK
         string order_status "order_status_enum"
-        string payment_method "payment_method_enum"
-        string payment_status "payment_status_enum"
         decimal total_amount
         timestamp created_at
         timestamp updated_at
@@ -60,8 +72,13 @@ erDiagram
 
 %% Relationships
     ADDRESSES ||--o{ USERS : "address_id"
+    ADDRESSES ||--o{ STORES : "address_id"
+    STORES ||--o{ MENU_ITEM_CATEGORIES : "store_id"
+    STORES ||--o{ ORDERS : "store_id"
+    STORES ||--o{ MENU_ITEMS : "store_id"
     USERS ||--o{ ORDERS : "user_id"
+    USERS ||--o{ STORES : "owner_id"
     ORDERS ||--o{ ORDER_ITEMS : "order_id"
     MENU_ITEMS ||--o{ ORDER_ITEMS : "menu_item_id"
     MENU_ITEM_CATEGORIES ||--o{ MENU_ITEMS : "category_id"
-    AUTHORITIES ||--o{ USERS : "authority_id"
+    ROLES ||--o{ USERS : "role_id"
