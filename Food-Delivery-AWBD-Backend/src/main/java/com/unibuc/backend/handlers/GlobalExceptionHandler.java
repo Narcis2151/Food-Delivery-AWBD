@@ -28,10 +28,23 @@ public class GlobalExceptionHandler {
                 .body(new ErrorResponse(e.getMessage()));
     }
 
-    @ExceptionHandler({AddressNotFoundException.class, StoreNotFoundException.class, UserNotFoundException.class})
+    @ExceptionHandler({
+            AddressNotFoundException.class,
+            StoreNotFoundException.class,
+            UserNotFoundException.class,
+            MenuItemCategoryNotFoundException.class,
+            MenuItemNotFoundException.class
+    })
     public ResponseEntity<ErrorResponse> handleNotFound(RuntimeException e) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
+                .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handle(org.springframework.security.access.AccessDeniedException e) {
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
                 .body(new ErrorResponse(e.getMessage()));
     }
 

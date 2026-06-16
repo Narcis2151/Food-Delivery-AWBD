@@ -16,11 +16,13 @@ import com.unibuc.backend.service.StoreService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @AllArgsConstructor
 @Service
+@Transactional
 public class StoreServiceImpl implements StoreService {
     private final StoreRepository storeRepository;
     private final AddressRepository addressRepository;
@@ -28,6 +30,7 @@ public class StoreServiceImpl implements StoreService {
     private final ModelMapper modelMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public List<StoreResponse> findAll() {
         return storeRepository.findAll().stream()
                 .map(this::toResponse)
@@ -35,6 +38,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public StoreResponse findById(Long id) {
         return toResponse(storeRepository.findById(id)
                 .orElseThrow(() -> new StoreNotFoundException(id)));
