@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.Objects;
 
+
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -23,6 +25,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handle(DuplicateEmailException e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(new ErrorResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler({AddressNotFoundException.class, StoreNotFoundException.class, UserNotFoundException.class})
+    public ResponseEntity<ErrorResponse> handleNotFound(RuntimeException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(e.getMessage()));
     }
 

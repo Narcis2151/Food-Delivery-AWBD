@@ -11,7 +11,9 @@ create table addresses (
     street varchar(255) not null,
     city varchar(100) not null,
     state varchar(100) not null,
-    country varchar(100) not null
+    country varchar(100) not null,
+    latitude decimal(5, 10) not null,
+    longitude decimal(5, 10) not null
 );
 
 create table users (
@@ -21,7 +23,7 @@ create table users (
     password varchar(255) not null,
     role_id int not null,
     phone_number varchar(20) not null,
-    address_id int not null,
+--    address_id int not null,
     foreign key (address_id) references addresses(id),
     foreign key (role_id) references roles (id)
 );
