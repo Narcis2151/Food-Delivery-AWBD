@@ -7,7 +7,9 @@ import com.unibuc.backend.exception.InvalidCredentialsException;
 import com.unibuc.backend.model.User;
 
 public interface AuthenticationService {
-    User signup(RegisterRequest input) throws DuplicateEmailException;
+    User registerCustomer(RegisterRequest input) throws DuplicateEmailException;
+
+    User registerStoreOwner(RegisterRequest input) throws DuplicateEmailException;
 
     User authenticate(LoginRequest input) throws InvalidCredentialsException;
 }

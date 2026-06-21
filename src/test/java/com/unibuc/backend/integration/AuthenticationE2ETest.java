@@ -32,7 +32,7 @@ class AuthenticationE2ETest {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private static final String SIGNUP_URL = "/api/v1/auth/signup";
+    private static final String SIGNUP_URL = "/api/v1/auth/register";
     private static final String LOGIN_URL  = "/api/v1/auth/login";
 
     @BeforeEach
@@ -45,7 +45,7 @@ class AuthenticationE2ETest {
     }
 
     private RegisterRequest customerRequest(String email) {
-        return new RegisterRequest("Test User", email, "Password123!", ERole.ROLE_CUSTOMER);
+        return new RegisterRequest("Test User", email, "Password123!");
     }
 
     private String signupAndGetToken(String email) throws Exception {

@@ -42,8 +42,8 @@ class AddressCrudE2ETest {
     }
 
     private String getAuthToken() throws Exception {
-        RegisterRequest req = new RegisterRequest("Test User", "test@mail.com", "Password123!", ERole.ROLE_CUSTOMER);
-        String body = mockMvc.perform(post("/api/v1/auth/signup")
+        RegisterRequest req = new RegisterRequest("Test User", "test@mail.com", "Password123!");
+        String body = mockMvc.perform(post("/api/v1/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(req)))
                 .andReturn().getResponse().getContentAsString();

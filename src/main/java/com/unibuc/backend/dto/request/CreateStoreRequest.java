@@ -13,18 +13,10 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Schema(description = "Store Request Details")
-public class StoreRequest {
+public class CreateStoreRequest {
     @NotBlank
     @Schema(description = "Store Name", example = "Pizza Palace")
     private String name;
-
-    @NotNull
-    @Schema(description = "Address ID", example = "1")
-    private Long addressId;
-
-    @NotBlank
-    @Schema(description = "Contact Phone Number", example = "+40712345678")
-    private String contactPhoneNumber;
 
     @NotNull
     @Schema(description = "Owner User ID", example = "1")

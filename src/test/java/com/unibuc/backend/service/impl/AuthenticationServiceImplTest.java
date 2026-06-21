@@ -41,37 +41,37 @@ class AuthenticationServiceImplTest {
     }
 
     @Test
-    void signup_whenEmailAlreadyExists_throwsDuplicateEmailException() {
-        RegisterRequest req = new RegisterRequest("Test User", "test@mail.com", "pass", ERole.ROLE_CUSTOMER);
+    void registerCustomer_whenEmailAlreadyExists_throwsDuplicateEmailException() {
+        RegisterRequest req = new RegisterRequest("Test User", "test@mail.com", "pass");
         when(userRepository.existsByEmail("test@mail.com")).thenReturn(true);
 
-        assertThatThrownBy(() -> authenticationService.signup(req))
+        assertThatThrownBy(() -> authenticationService.registerCustomer(req))
                 .isInstanceOf(DuplicateEmailException.class);
         verify(userRepository, never()).save(any());
     }
 
     @Test
-    void signup_whenRoleNotFound_throwsNotExistentRoleException() {
-        RegisterRequest req = new RegisterRequest("Test User", "test@mail.com", "pass", ERole.ROLE_CUSTOMER);
+    void registerCustomer_whenRoleNotFound_throwsNotExistentRoleException() {
+        RegisterRequest req = new RegisterRequest("Test User", "test@mail.com", "pass");
         when(userRepository.existsByEmail("test@mail.com")).thenReturn(false);
         when(roleRepository.findByName(ERole.ROLE_CUSTOMER)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> authenticationService.signup(req))
+        assertThatThrownBy(() -> authenticationService.registerCustomer(req))
                 .isInstanceOf(NotExistentRoleException.class);
         verify(userRepository, never()).save(any());
     }
 
     @Test
-    void signup_whenValidRequest_encodesPasswordAndSavesUser() {
+    void registerCustomer_whenValidRequest_encodesPasswordAndSavesUser() {
         Role role = customerRole();
-        RegisterRequest req = new RegisterRequest("John Doe", "john@mail.com", "plaintext", ERole.ROLE_CUSTOMER);
+        RegisterRequest req = new RegisterRequest("John Doe", "john@mail.com", "plaintext");
         when(userRepository.existsByEmail("john@mail.com")).thenReturn(false);
         when(roleRepository.findByName(ERole.ROLE_CUSTOMER)).thenReturn(Optional.of(role));
         when(passwordEncoder.encode("plaintext")).thenReturn("hashed");
         User saved = new User("John Doe", "john@mail.com", "hashed", role);
         when(userRepository.save(any(User.class))).thenReturn(saved);
 
-        User result = authenticationService.signup(req);
+        User result = authenticationService.registerCustomer(req);
 
         assertThat(result.getEmail()).isEqualTo("john@mail.com");
         assertThat(result.getPassword()).isEqualTo("hashed");

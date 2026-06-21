@@ -1,6 +1,7 @@
 package com.unibuc.backend.service.impl;
 
-import com.unibuc.backend.dto.request.StoreRequest;
+import com.unibuc.backend.dto.request.CreateStoreRequest;
+import com.unibuc.backend.dto.request.UpdateStoreRequest;
 import com.unibuc.backend.dto.response.AddressResponse;
 import com.unibuc.backend.dto.response.StoreResponse;
 import com.unibuc.backend.exception.AddressNotFoundException;
@@ -15,6 +16,7 @@ import com.unibuc.backend.repository.UserRepository;
 import com.unibuc.backend.service.StoreService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,28 +41,34 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<StoreResponse> findMine() {
+        User currentUser = (User) SecurityContextHolder.getContext()
+                .getAuthentication().getPrincipal();
+        return storeRepository.findByOwnerId(currentUser.getId()).stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public StoreResponse findById(Long id) {
         return toResponse(storeRepository.findById(id)
                 .orElseThrow(() -> new StoreNotFoundException(id)));
     }
 
     @Override
-    public StoreResponse create(StoreRequest request) {
-        Address address = addressRepository.findById(request.getAddressId())
-                .orElseThrow(() -> new AddressNotFoundException(request.getAddressId()));
+    public StoreResponse create(CreateStoreRequest request) {
         User owner = userRepository.findById(request.getOwnerId())
                 .orElseThrow(() -> new UserNotFoundException(request.getOwnerId()));
         Store store = Store.builder()
                 .name(request.getName())
-                .address(address)
-                .contactPhoneNumber(request.getContactPhoneNumber())
                 .owner(owner)
                 .build();
         return toResponse(storeRepository.save(store));
     }
 
     @Override
-    public StoreResponse update(Long id, StoreRequest request) {
+    public StoreResponse update(Long id, UpdateStoreRequest request) {
         Store store = storeRepository.findById(id)
                 .orElseThrow(() -> new StoreNotFoundException(id));
         Address address = addressRepository.findById(request.getAddressId())

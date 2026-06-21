@@ -18,10 +18,10 @@ public class Store {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id", nullable = false)
+    @JoinColumn(name = "address_id")
     private Address address;
 
-    @Column(name = "contact_phone_number", nullable = false)
+    @Column(name = "contact_phone_number")
     private String contactPhoneNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)

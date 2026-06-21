@@ -1,6 +1,6 @@
 package com.unibuc.backend.controller;
 
-import com.unibuc.backend.service.impl.AuthenticationServiceImpl;
+import com.unibuc.backend.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,6 +9,7 @@ import com.unibuc.backend.dto.response.LoginResponse;
 import com.unibuc.backend.service.impl.JwtServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.unibuc.backend.dto.request.RegisterRequest;
 import com.unibuc.backend.dto.request.LoginRequest;
@@ -22,15 +23,35 @@ import com.unibuc.backend.model.User;
 public class AuthenticationController {
     private final JwtServiceImpl jwtServiceImpl;
 
-    private final AuthenticationServiceImpl authenticationServiceImpl;
+    private final AuthenticationService authenticationService;
 
 
-    @PostMapping(path = "/signup")
-    @Operation(summary = "Sign Up User", description = "Register a new user")
+    @PostMapping(path = "/register")
+    @Operation(summary = "Sign Up Customer", description = "Register a new customer")
     public ResponseEntity<LoginResponse> register(@Valid @RequestBody RegisterRequest registerUserDto) {
-        authenticationServiceImpl.signup(registerUserDto);
+        authenticationService.registerCustomer(registerUserDto);
 
-        User authenticatedUser = authenticationServiceImpl.authenticate(
+        User authenticatedUser = authenticationService.authenticate(
+                new LoginRequest(registerUserDto.getEmail(), registerUserDto.getPassword())
+        );
+
+        String jwtToken = jwtServiceImpl.generateToken(authenticatedUser);
+
+        LoginResponse loginResponse = new LoginResponse(
+                jwtToken,
+                jwtServiceImpl.getExpirationTime()
+        );
+
+        return ResponseEntity.ok(loginResponse);
+    }
+
+    @PostMapping(path = "/register/store-owner")
+    @PreAuthorize("hasRole('ADMIN')")
+    @Operation(summary = "Register Store Owner", description = "Register a new customer")
+    public ResponseEntity<LoginResponse> registerStoreOwner(@Valid @RequestBody RegisterRequest registerUserDto) {
+        authenticationService.registerStoreOwner(registerUserDto);
+
+        User authenticatedUser = authenticationService.authenticate(
                 new LoginRequest(registerUserDto.getEmail(), registerUserDto.getPassword())
         );
 
@@ -47,7 +68,7 @@ public class AuthenticationController {
     @PostMapping(path = "/login")
     @Operation(summary = "Login User", description = "Authenticate a user")
     public ResponseEntity<LoginResponse> authenticate(@Valid @RequestBody LoginRequest loginUserDto) {
-        User authenticatedUser = authenticationServiceImpl.authenticate(loginUserDto);
+        User authenticatedUser = authenticationService.authenticate(loginUserDto);
 
         String jwtToken = jwtServiceImpl.generateToken(authenticatedUser);
 
