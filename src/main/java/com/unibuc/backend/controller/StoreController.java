@@ -23,6 +23,7 @@ public class StoreController {
     private final StoreService storeService;
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
     @Operation(summary = "Get All Stores", description = "Retrieve a list of all stores")
     public ResponseEntity<List<StoreResponse>> findAll() {
         return ResponseEntity.ok(storeService.findAll());
@@ -45,7 +46,8 @@ public class StoreController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Operation(summary = "Create Store", description = "Create a new store")
     public ResponseEntity<StoreResponse> create(@Valid @RequestBody CreateStoreRequest request) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(storeService.create(request));
+        var storeResponse = storeService.create(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(storeResponse);
     }
 
     @PutMapping("/{id}")

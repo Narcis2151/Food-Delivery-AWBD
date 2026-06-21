@@ -44,22 +44,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return userRepository.save(user);
     }
 
-    @Override
-    public User registerStoreOwner(RegisterRequest input) throws DuplicateEmailException {
-        if (userRepository.existsByEmail(input.getEmail())) {
-            throw new DuplicateEmailException();
-        }
-        var role = roleRepository.findByName(ERole.ROLE_STORE_OWNER).orElseThrow(NotExistentRoleException::new);
 
-        var user = new User(
-                input.getFullName(),
-                input.getEmail(),
-                passwordEncoder.encode(input.getPassword()),
-                role
-        );
-
-        return userRepository.save(user);
-    }
 
     @Override
     public User authenticate(LoginRequest input) throws InvalidCredentialsException {

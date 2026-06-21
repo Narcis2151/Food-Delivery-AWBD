@@ -9,7 +9,6 @@ import com.unibuc.backend.dto.response.LoginResponse;
 import com.unibuc.backend.service.impl.JwtServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import com.unibuc.backend.dto.request.RegisterRequest;
 import com.unibuc.backend.dto.request.LoginRequest;
@@ -45,25 +44,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(loginResponse);
     }
 
-    @PostMapping(path = "/register/store-owner")
-    @PreAuthorize("hasRole('ADMIN')")
-    @Operation(summary = "Register Store Owner", description = "Register a new customer")
-    public ResponseEntity<LoginResponse> registerStoreOwner(@Valid @RequestBody RegisterRequest registerUserDto) {
-        authenticationService.registerStoreOwner(registerUserDto);
 
-        User authenticatedUser = authenticationService.authenticate(
-                new LoginRequest(registerUserDto.getEmail(), registerUserDto.getPassword())
-        );
-
-        String jwtToken = jwtServiceImpl.generateToken(authenticatedUser);
-
-        LoginResponse loginResponse = new LoginResponse(
-                jwtToken,
-                jwtServiceImpl.getExpirationTime()
-        );
-
-        return ResponseEntity.ok(loginResponse);
-    }
 
     @PostMapping(path = "/login")
     @Operation(summary = "Login User", description = "Authenticate a user")

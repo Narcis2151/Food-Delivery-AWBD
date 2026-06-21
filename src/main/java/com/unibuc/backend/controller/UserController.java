@@ -1,5 +1,6 @@
 package com.unibuc.backend.controller;
 
+import com.unibuc.backend.dto.request.RegisterRequest;
 import com.unibuc.backend.dto.request.UpdateUserRequest;
 import com.unibuc.backend.dto.response.UserResponse;
 import com.unibuc.backend.service.UserService;
@@ -8,7 +9,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/users")
@@ -27,5 +31,19 @@ public class UserController {
     @Operation(summary = "Update Current User", description = "Update the authenticated user's profile and saved address")
     public ResponseEntity<UserResponse> updateMe(@Valid @RequestBody UpdateUserRequest request) {
         return ResponseEntity.ok(userService.updateCurrentUser(request));
+    }
+
+    @PostMapping(path = "/store-owners")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Create Store Owner", description = "Create a new store owner")
+    public ResponseEntity<UserResponse> registerStoreOwner(@Valid @RequestBody RegisterRequest registerUserDto) {
+        return ResponseEntity.ok(userService.registerStoreOwner(registerUserDto));
+    }
+
+    @GetMapping(path = "/store-owners")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @Operation(summary = "Get Store Owners", description = "Retrieve a list of all store owners")
+    public ResponseEntity<List<UserResponse>> getStoreOwners() {
+        return ResponseEntity.ok(userService.getStoreOwners());
     }
 }

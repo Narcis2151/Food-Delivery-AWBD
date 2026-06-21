@@ -26,9 +26,6 @@ public class StoreResponse {
     @Schema(description = "Contact Phone Number", example = "+40712345678")
     private String contactPhoneNumber;
 
-    @Schema(description = "Owner User ID", example = "1")
-    private Long ownerId;
-
-    @Schema(description = "Owner Full Name", example = "John Doe")
-    private String ownerFullName;
+    @Schema(description = "Owner Email", example = "store_owner@mail.com")
+    private String ownerEmail;
 }

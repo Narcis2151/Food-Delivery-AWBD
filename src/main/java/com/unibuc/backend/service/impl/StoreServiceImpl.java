@@ -60,9 +60,25 @@ public class StoreServiceImpl implements StoreService {
     public StoreResponse create(CreateStoreRequest request) {
         User owner = userRepository.findById(request.getOwnerId())
                 .orElseThrow(() -> new UserNotFoundException(request.getOwnerId()));
+
+        Address address = null;
+        if (request.getAddress() != null) {
+            var a = request.getAddress();
+            address = addressRepository.save(Address.builder()
+                    .street(a.getStreet())
+                    .city(a.getCity())
+                    .state(a.getState())
+                    .country(a.getCountry())
+                    .latitude(a.getLatitude())
+                    .longitude(a.getLongitude())
+                    .build());
+        }
+
         Store store = Store.builder()
                 .name(request.getName())
                 .owner(owner)
+                .address(address)
+                .contactPhoneNumber(request.getContactPhoneNumber())
                 .build();
         return toResponse(storeRepository.save(store));
     }
@@ -91,13 +107,15 @@ public class StoreServiceImpl implements StoreService {
     }
 
     private StoreResponse toResponse(Store store) {
+        AddressResponse addressResponse = store.getAddress() != null
+                ? modelMapper.map(store.getAddress(), AddressResponse.class)
+                : null;
         return StoreResponse.builder()
                 .id(store.getId())
                 .name(store.getName())
-                .address(modelMapper.map(store.getAddress(), AddressResponse.class))
+                .address(addressResponse)
                 .contactPhoneNumber(store.getContactPhoneNumber())
-                .ownerId(store.getOwner().getId())
-                .ownerFullName(store.getOwner().getFullName())
+                .ownerEmail(store.getOwner().getEmail())
                 .build();
     }
 }
