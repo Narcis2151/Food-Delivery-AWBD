@@ -4,6 +4,7 @@ import com.unibuc.backend.dto.request.OrderRequest;
 import com.unibuc.backend.dto.request.OrderStatusUpdateRequest;
 import com.unibuc.backend.dto.response.OrderItemResponse;
 import com.unibuc.backend.dto.response.OrderResponse;
+import com.unibuc.backend.dto.response.PageResponse;
 import com.unibuc.backend.exception.MenuItemNotFoundException;
 import com.unibuc.backend.exception.OrderNotFoundException;
 import com.unibuc.backend.exception.StoreNotFoundException;
@@ -13,6 +14,8 @@ import com.unibuc.backend.repository.OrderRepository;
 import com.unibuc.backend.repository.StoreRepository;
 import com.unibuc.backend.service.OrderService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -70,22 +73,24 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderResponse> findMyOrders() {
+    public PageResponse<OrderResponse> findMyOrders(List<OrderStatus> statuses, Pageable pageable) {
         User currentUser = getCurrentUser();
-        return orderRepository.findByUserId(currentUser.getId()).stream()
-                .map(this::toResponse)
-                .toList();
+        Page<Order> page = statuses == null || statuses.isEmpty()
+                ? orderRepository.findByUserId(currentUser.getId(), pageable)
+                : orderRepository.findByUserIdAndOrderStatusIn(currentUser.getId(), statuses, pageable);
+        return PageResponse.from(page, this::toResponse);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderResponse> findByStoreId(Long storeId) {
+    public PageResponse<OrderResponse> findByStoreId(Long storeId, List<OrderStatus> statuses, Pageable pageable) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new StoreNotFoundException(storeId));
         assertIsStoreOwner(store);
-        return orderRepository.findByStoreId(storeId).stream()
-                .map(this::toResponse)
-                .toList();
+        Page<Order> page = statuses == null || statuses.isEmpty()
+                ? orderRepository.findByStoreId(storeId, pageable)
+                : orderRepository.findByStoreIdAndOrderStatusIn(storeId, statuses, pageable);
+        return PageResponse.from(page, this::toResponse);
     }
 
     @Override

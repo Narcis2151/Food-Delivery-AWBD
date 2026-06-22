@@ -2,18 +2,20 @@ package com.unibuc.backend.controller;
 
 import com.unibuc.backend.dto.request.CreateStoreRequest;
 import com.unibuc.backend.dto.request.UpdateStoreRequest;
+import com.unibuc.backend.dto.response.PageResponse;
 import com.unibuc.backend.dto.response.StoreResponse;
 import com.unibuc.backend.service.StoreService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/stores")
@@ -24,16 +26,18 @@ public class StoreController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_CUSTOMER')")
-    @Operation(summary = "Get All Stores", description = "Retrieve a list of all stores")
-    public ResponseEntity<List<StoreResponse>> findAll() {
-        return ResponseEntity.ok(storeService.findAll());
+    @Operation(summary = "Get All Stores", description = "Retrieve a paginated list of stores")
+    public ResponseEntity<PageResponse<StoreResponse>> findAll(
+            @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(storeService.findAll(pageable));
     }
 
     @GetMapping("/mine")
     @PreAuthorize("hasRole('ROLE_STORE_OWNER')")
     @Operation(summary = "Get My Stores", description = "Retrieve the stores owned by the current user")
-    public ResponseEntity<List<StoreResponse>> findMine() {
-        return ResponseEntity.ok(storeService.findMine());
+    public ResponseEntity<PageResponse<StoreResponse>> findMine(
+            @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(storeService.findMine(pageable));
     }
 
     @GetMapping("/{id}")

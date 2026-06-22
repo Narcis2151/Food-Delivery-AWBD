@@ -3,6 +3,7 @@ package com.unibuc.backend.service.impl;
 import com.unibuc.backend.dto.request.CreateStoreRequest;
 import com.unibuc.backend.dto.request.UpdateStoreRequest;
 import com.unibuc.backend.dto.response.AddressResponse;
+import com.unibuc.backend.dto.response.PageResponse;
 import com.unibuc.backend.dto.response.StoreResponse;
 import com.unibuc.backend.exception.AddressNotFoundException;
 import com.unibuc.backend.exception.StoreNotFoundException;
@@ -16,11 +17,10 @@ import com.unibuc.backend.repository.UserRepository;
 import com.unibuc.backend.service.StoreService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @AllArgsConstructor
 @Service
@@ -33,20 +33,16 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<StoreResponse> findAll() {
-        return storeRepository.findAll().stream()
-                .map(this::toResponse)
-                .toList();
+    public PageResponse<StoreResponse> findAll(Pageable pageable) {
+        return PageResponse.from(storeRepository.findAll(pageable), this::toResponse);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<StoreResponse> findMine() {
+    public PageResponse<StoreResponse> findMine(Pageable pageable) {
         User currentUser = (User) SecurityContextHolder.getContext()
                 .getAuthentication().getPrincipal();
-        return storeRepository.findByOwnerId(currentUser.getId()).stream()
-                .map(this::toResponse)
-                .toList();
+        return PageResponse.from(storeRepository.findByOwnerId(currentUser.getId(), pageable), this::toResponse);
     }
 
     @Override

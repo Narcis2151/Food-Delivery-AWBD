@@ -2,16 +2,18 @@ package com.unibuc.backend.controller;
 
 import com.unibuc.backend.dto.request.MenuItemRequest;
 import com.unibuc.backend.dto.response.MenuItemResponse;
+import com.unibuc.backend.dto.response.PageResponse;
 import com.unibuc.backend.service.MenuItemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/menu-items")
@@ -21,21 +23,26 @@ public class MenuItemController {
     private final MenuItemService menuItemService;
 
     @GetMapping
-    @Operation(summary = "Get All Menu Items", description = "Retrieve all menu items")
-    public ResponseEntity<List<MenuItemResponse>> findAll() {
-        return ResponseEntity.ok(menuItemService.findAll());
+    @Operation(summary = "Get All Menu Items", description = "Retrieve all menu items (paginated)")
+    public ResponseEntity<PageResponse<MenuItemResponse>> findAll(
+            @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(menuItemService.findAll(pageable));
     }
 
     @GetMapping("/store/{storeId}")
-    @Operation(summary = "Get Menu Items By Store", description = "Retrieve all menu items for a given store")
-    public ResponseEntity<List<MenuItemResponse>> findByStoreId(@PathVariable Long storeId) {
-        return ResponseEntity.ok(menuItemService.findByStoreId(storeId));
+    @Operation(summary = "Get Menu Items By Store", description = "Retrieve menu items for a given store (paginated)")
+    public ResponseEntity<PageResponse<MenuItemResponse>> findByStoreId(
+            @PathVariable Long storeId,
+            @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(menuItemService.findByStoreId(storeId, pageable));
     }
 
     @GetMapping("/category/{categoryId}")
-    @Operation(summary = "Get Menu Items By Category", description = "Retrieve all menu items in a given category")
-    public ResponseEntity<List<MenuItemResponse>> findByCategoryId(@PathVariable Long categoryId) {
-        return ResponseEntity.ok(menuItemService.findByCategoryId(categoryId));
+    @Operation(summary = "Get Menu Items By Category", description = "Retrieve menu items in a given category (paginated)")
+    public ResponseEntity<PageResponse<MenuItemResponse>> findByCategoryId(
+            @PathVariable Long categoryId,
+            @PageableDefault(size = 20, sort = "name", direction = Sort.Direction.ASC) Pageable pageable) {
+        return ResponseEntity.ok(menuItemService.findByCategoryId(categoryId, pageable));
     }
 
     @GetMapping("/{id}")

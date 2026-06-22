@@ -2,13 +2,13 @@ package com.unibuc.backend.service;
 
 import com.unibuc.backend.dto.request.CreateStoreRequest;
 import com.unibuc.backend.dto.request.UpdateStoreRequest;
+import com.unibuc.backend.dto.response.PageResponse;
 import com.unibuc.backend.dto.response.StoreResponse;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface StoreService {
-    List<StoreResponse> findAll();
-    List<StoreResponse> findMine();
+    PageResponse<StoreResponse> findAll(Pageable pageable);
+    PageResponse<StoreResponse> findMine(Pageable pageable);
     StoreResponse findById(Long id);
     StoreResponse create(CreateStoreRequest request);
     StoreResponse update(Long id, UpdateStoreRequest request);
