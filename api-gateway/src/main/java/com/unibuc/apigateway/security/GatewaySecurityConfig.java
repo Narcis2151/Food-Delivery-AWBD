@@ -17,7 +17,7 @@ public class GatewaySecurityConfig {
         FilterRegistrationBean<JwtAuthenticationFilter> registration =
                 new FilterRegistrationBean<>(new JwtAuthenticationFilter(secretKey));
         registration.addUrlPatterns("/*");
-        registration.setOrder(Ordered.HIGHEST_PRECEDENCE);
+        registration.setOrder(Ordered.HIGHEST_PRECEDENCE + 10);
         return registration;
     }
 }

@@ -23,19 +23,3 @@ spring:
               uri: lb://order-service
               predicates:
                 - Path=/api/v1/orders/**
-          globalcors:
-            cors-configurations:
-              '[/**]':
-                allowed-origins:
-                  - http://localhost:3000
-                  - http://localhost:3001
-                  - http://localhost:3002
-                allowed-methods:
-                  - GET
-                  - POST
-                  - PUT
-                  - PATCH
-                  - DELETE
-                  - OPTIONS
-                allowed-headers: "*"
-                allow-credentials: true

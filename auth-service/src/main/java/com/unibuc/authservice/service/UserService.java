@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface UserService {
     UserResponse getCurrentUser();
+    UserResponse getById(Long id);
     UserResponse registerStoreOwner(RegisterRequest input) throws DuplicateEmailException;
     List<UserResponse> getStoreOwners();
     UserResponse updateCurrentUser(UpdateUserRequest request);

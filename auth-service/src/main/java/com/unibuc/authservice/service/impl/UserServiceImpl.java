@@ -41,6 +41,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
+    public UserResponse getById(Long id) {
+        return toResponse(userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(id)));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<UserResponse> getStoreOwners() {
         return userRepository.findByRole_Name(ERole.ROLE_STORE_OWNER).stream()
                 .map(this::toResponse)

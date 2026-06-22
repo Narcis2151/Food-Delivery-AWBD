@@ -1,24 +1,10 @@
 server:
   port: 8081
 
-spring:
-  datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/food_delivery_db}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:root}
-  jpa:
-    hibernate:
-      ddl-auto: update
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-        default_schema: public
-
-# Seeds the role catalog and a bootstrap admin account on first startup.
+# Seeds the role catalog and a bootstrap admin account on first startup (dev).
 app:
   bootstrap:
-    enabled: true
+    enabled: ${APP_BOOTSTRAP_ENABLED:true}
     admin:
       email: ${ADMIN_EMAIL:admin@fooddelivery.local}
       password: ${ADMIN_PASSWORD:admin123}

@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.*;
 import com.unibuc.authservice.dto.request.RegisterRequest;
 import com.unibuc.authservice.dto.request.LoginRequest;
 import com.unibuc.authservice.model.User;
+import org.springframework.security.core.GrantedAuthority;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RequestMapping("/api/v1/auth")
 @RestController
@@ -34,7 +38,7 @@ public class AuthenticationController {
                 new LoginRequest(registerUserDto.getEmail(), registerUserDto.getPassword())
         );
 
-        String jwtToken = jwtServiceImpl.generateToken(authenticatedUser);
+        String jwtToken = jwtServiceImpl.generateToken(buildClaims(authenticatedUser), authenticatedUser);
 
         LoginResponse loginResponse = new LoginResponse(
                 jwtToken,
@@ -51,7 +55,7 @@ public class AuthenticationController {
     public ResponseEntity<LoginResponse> authenticate(@Valid @RequestBody LoginRequest loginUserDto) {
         User authenticatedUser = authenticationService.authenticate(loginUserDto);
 
-        String jwtToken = jwtServiceImpl.generateToken(authenticatedUser);
+        String jwtToken = jwtServiceImpl.generateToken(buildClaims(authenticatedUser), authenticatedUser);
 
         LoginResponse loginResponse = new LoginResponse(
                 jwtToken,
@@ -59,5 +63,16 @@ public class AuthenticationController {
         );
 
         return ResponseEntity.ok(loginResponse);
+    }
+
+    // Embed the user id and roles in the token so downstream microservices can
+    // authorize requests statelessly, without querying the users table.
+    private Map<String, Object> buildClaims(User user) {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("userId", user.getId());
+        claims.put("roles", user.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority)
+                .toList());
+        return claims;
     }
 }

@@ -27,6 +27,12 @@ public class UserController {
         return ResponseEntity.ok(userService.getCurrentUser());
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Get User By ID", description = "Retrieve a user by id (used for inter-service lookups)")
+    public ResponseEntity<UserResponse> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(userService.getById(id));
+    }
+
     @PutMapping("/me")
     @Operation(summary = "Update Current User", description = "Update the authenticated user's profile and saved address")
     public ResponseEntity<UserResponse> updateMe(@Valid @RequestBody UpdateUserRequest request) {
