@@ -1,0 +1,15 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/food_delivery_db}
+    username: ${DB_USERNAME:food_delivery}
+    password: ${DB_PASSWORD:food_delivery}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
