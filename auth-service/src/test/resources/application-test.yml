@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:authtestdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+security:
+  jwt:
+    secret-key: e3cbc7cca57d111913d50b0c0b4075b5bc2e6265da68bcdaf325b9132b8eb57e
+    expiration-time: 86400000
+
+app:
+  bootstrap:
+    enabled: false
