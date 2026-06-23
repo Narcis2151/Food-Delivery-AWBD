@@ -1,0 +1,93 @@
+erDiagram
+    ADDRESSES {
+        int id PK
+        string street
+        string city
+        string state
+        string country
+    }
+
+    ROLES {
+        int id PK
+        string name
+    }
+
+    USERS {
+        int id PK
+        string name
+        string email "UNIQUE"
+        string password
+        int role_id FK
+        string phone_number
+        int address_id FK
+    }
+
+    STORES {
+        int id PK
+        string name
+        int address_id FK
+        string contact_phone_number
+        int owner_id FK
+    }
+
+    MENU_ITEM_CATEGORIES {
+        int id PK
+        string name
+        int store_id FK
+        int display_order
+    }
+
+    MENU_ITEMS {
+        int id PK
+        string name
+        string description
+        decimal price
+        boolean is_available
+        string image_url
+        int category_id FK
+        int store_id FK
+    }
+
+    ORDERS {
+        int id PK
+        int user_id FK
+        int store_id FK
+        string order_status "order_status_enum"
+        decimal total_amount
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    ORDER_ITEMS {
+        int id PK
+        int order_id FK
+        int menu_item_id FK
+        int quantity
+        decimal price
+        decimal order_total
+    }
+
+    REVIEWS {
+        int id PK
+        int user_id FK
+        int menu_item_id FK
+        int rating
+        string comment
+        timestamp created_at
+    }
+
+
+%% Relationships
+    ADDRESSES ||--o{ USERS : "address_id"
+    ADDRESSES ||--o{ STORES : "address_id"
+    STORES ||--o{ MENU_ITEM_CATEGORIES : "store_id"
+    STORES ||--o{ ORDERS : "store_id"
+    STORES ||--o{ MENU_ITEMS : "store_id"
+    USERS ||--o{ ORDERS : "user_id"
+    USERS ||--o{ STORES : "owner_id"
+    ORDERS ||--o{ ORDER_ITEMS : "order_id"
+    MENU_ITEMS ||--o{ ORDER_ITEMS : "menu_item_id"
+    MENU_ITEM_CATEGORIES ||--o{ MENU_ITEMS : "category_id"
+    ROLES ||--o{ USERS : "role_id"
+    USERS ||--o{ REVIEWS : "user_id"
+    MENU_ITEMS ||--o{ REVIEWS : "menu_item_id"

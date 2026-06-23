@@ -1,0 +1,11 @@
+server:
+  port: 8081
+
+# Seeds the role catalog and a bootstrap admin account on first startup (dev).
+app:
+  bootstrap:
+    enabled: ${APP_BOOTSTRAP_ENABLED:true}
+    admin:
+      email: ${ADMIN_EMAIL:admin@fooddelivery.local}
+      password: ${ADMIN_PASSWORD:admin123}
+      full-name: ${ADMIN_FULL_NAME:System Admin}
