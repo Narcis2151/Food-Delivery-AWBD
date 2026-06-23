@@ -23,7 +23,7 @@ create table users (
     password varchar(255) not null,
     role_id int not null,
     phone_number varchar(20) not null,
---    address_id int not null,
+    address_id int not null,
     foreign key (address_id) references addresses(id),
     foreign key (role_id) references roles (id)
 );
