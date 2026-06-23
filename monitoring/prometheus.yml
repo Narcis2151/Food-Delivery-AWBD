@@ -2,9 +2,6 @@ global:
   scrape_interval: 10s
   evaluation_interval: 10s
 
-# Targets use the docker-compose service names (resolved on the shared
-# food-delivery-net network). When running a service directly on the host
-# instead of in a container, swap its target for host.docker.internal:<port>.
 scrape_configs:
   - job_name: 'api-gateway'
     metrics_path: /actuator/prometheus
@@ -34,12 +31,6 @@ scrape_configs:
         labels:
           application: order-service
 
-  - job_name: 'review-service'
-    metrics_path: /actuator/prometheus
-    static_configs:
-      - targets: ['review-service:8084']
-        labels:
-          application: review-service
 
   - job_name: 'prometheus'
     static_configs:
