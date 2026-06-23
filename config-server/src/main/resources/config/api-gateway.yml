@@ -23,3 +23,7 @@ spring:
               uri: lb://order-service
               predicates:
                 - Path=/api/v1/orders/**
+            - id: review-service
+              uri: lb://review-service
+              predicates:
+                - Path=/api/v1/reviews/**

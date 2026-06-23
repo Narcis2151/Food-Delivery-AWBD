@@ -29,6 +29,8 @@
         <module>discovery-service</module>
         <module>auth-service</module>
         <module>stores-service</module>
+        <module>order-service</module>
+        <module>review-service</module>
         <module>monolith</module>
     </modules>
 
@@ -41,11 +43,6 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
-<!--            <dependency>-->
-<!--                <groupId>com.unibuc</groupId>-->
-<!--                <artifactId>common</artifactId>-->
-<!--                <version>${project.version}</version>-->
-<!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 

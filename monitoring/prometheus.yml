@@ -2,27 +2,44 @@ global:
   scrape_interval: 10s
   evaluation_interval: 10s
 
+# Targets use the docker-compose service names (resolved on the shared
+# food-delivery-net network). When running a service directly on the host
+# instead of in a container, swap its target for host.docker.internal:<port>.
 scrape_configs:
   - job_name: 'api-gateway'
     metrics_path: /actuator/prometheus
     static_configs:
-      - targets: ['host.docker.internal:8222']
+      - targets: ['api-gateway:8222']
         labels:
           application: api-gateway
 
   - job_name: 'auth-service'
     metrics_path: /actuator/prometheus
     static_configs:
-      - targets: ['host.docker.internal:8081']
+      - targets: ['auth-service:8081']
         labels:
           application: auth-service
 
   - job_name: 'stores-service'
     metrics_path: /actuator/prometheus
     static_configs:
-      - targets: ['host.docker.internal:8082']
+      - targets: ['stores-service:8082']
         labels:
           application: stores-service
+
+  - job_name: 'order-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['order-service:8083']
+        labels:
+          application: order-service
+
+  - job_name: 'review-service'
+    metrics_path: /actuator/prometheus
+    static_configs:
+      - targets: ['review-service:8084']
+        labels:
+          application: review-service
 
   - job_name: 'prometheus'
     static_configs:
